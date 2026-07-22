@@ -1,0 +1,60 @@
+// Material Religion — Princeton University Brand Variables
+
+// Colors
+:root {
+    --orange:    #E87722;
+    --black:     #000000;
+    --white:     #FFFFFF;
+    --bg:        #F7F4EF;
+    --bg-alt:    #EEEBE4;
+    --border:    #D6D1C8;
+    --gray:      #9C9693;
+    --gray-dark: #3A3635;
+    --gray-light:#E8E4DD;
+    --accent:    var(--orange);
+    --bold:      var(--black);
+    --light:     var(--border);
+}
+
+// Typography
+$font-sans: 'Libre Franklin', 'Franklin Gothic Medium', Arial, sans-serif;
+$font-serif: 'Playfair Display', 'Times New Roman', Georgia, serif;
+$base-font-size: 20px;
+$base-line-height: 30px;
+
+// Spacing
+$spacing-s: .25 * $base-line-height;
+$spacing-m: .5  * $base-line-height;
+$spacing-l: $base-line-height;
+
+// Mixins
+@mixin container {
+    max-width: 1700px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+@mixin button {
+    display: inline-block;
+    appearance: none;
+    -webkit-appearance: none;
+    background-color: var(--orange);
+    color: #fff;
+    border: 2px solid var(--orange);
+    border-radius: 0;
+    padding: $spacing-s $spacing-l;
+    font-family: $font-sans;
+    font-size: .875 * $base-font-size;
+    font-weight: 600;
+    letter-spacing: .05em;
+    text-transform: uppercase;
+    cursor: pointer;
+    text-decoration: none;
+    transition: background-color .15s ease, color .15s ease;
+
+    &:hover {
+        background-color: #000;
+        border-color: #000;
+        color: #fff;
+    }
+}
