@@ -1,0 +1,115 @@
+<?php
+/**
+ * Legacy image map (ported from Reed Digital Collections, Indian Converts).
+ *
+ * Draws a fixed 800px image map: a base image, one overlay image per layer,
+ * and place-name links positioned in pixels, as on the original site.
+ * Layer checkboxes work with CSS only (:has), so no JavaScript is needed.
+ *
+ * Variables:
+ *   $map = [
+ *     'id'     => short name, used for CSS classes,
+ *     'title'  => accessible name of the map,
+ *     'height' => image height in px (width is always 800),
+ *     'base'   => ['src' => file in asset/img/legacy-maps/, 'alt' => text],
+ *     'links'  => [['text' => ..., 'page' => page slug], ...] (shown in the legend box),
+ *     'layers' => [[
+ *         'key' => tribes|states|towns|cemeteries|churches,
+ *         'label' => checkbox label,
+ *         'image' => overlay file in asset/img/legacy-maps/,
+ *         'entries' => [entry, ...],
+ *     ], ...],
+ *   ]
+ *
+ * An entry is one positioned label:
+ *   'x' or 'r'  left or right offset in px; 'y' top offset in px
+ *   'text'      label text
+ *   'q'         optional search: ['p' => property term, 't' => 'in'|'eq', 'v' => value]
+ *               or ['ft' => fulltext keywords]. No 'q' and no 'page' = plain text.
+ *   'page'      optional site page slug to link to instead of a search
+ *   'group'     optional list of entries (text/q only) stacked at this position
+ *   'style'     optional group style: line (default), right, cols, plain, box
+ */
+$escape = $this->plugin('escapeHtml');
+$escapeAttr = $this->plugin('escapeHtmlAttr');
+$this->headLink()->appendStylesheet($this->assetUrl('css/legacy-maps.css'));
+
+$img = function ($file) {
+    return $this->assetUrl('img/legacy-maps/' . $file);
+};
+
+$href = function (array $entry) {
+    if (!empty($entry['page'])) {
+        return $this->url('site/page', ['page-slug' => $entry['page']], [], true);
+    }
+    if (empty($entry['q'])) {
+        return null;
+    }
+    $q = $entry['q'];
+    if (isset($q['ft'])) {
+        $query = ['fulltext_search' => $q['ft']];
+    } else {
+        $query = ['property' => [[
+            'joiner' => 'and',
+            'property' => $q['p'],
+            'type' => $q['t'],
+            'text' => $q['v'],
+        ]]];
+    }
+    return $this->url('site/resource', ['controller' => 'item', 'action' => 'browse'], ['query' => $query], true);
+};
+
+$link = function (array $entry) use ($href, $escape, $escapeAttr) {
+    $url = $href($entry);
+    $text = $escape($entry['text']);
+    return $url ? sprintf('<a href="%s">%s</a>', $escapeAttr($url), $text) : '<span>' . $text . '</span>';
+};
+
+$position = function (array $entry) {
+    $style = isset($entry['r']) ? 'right:' . (int) $entry['r'] . 'px;' : 'left:' . (int) $entry['x'] . 'px;';
+    return $style . 'top:' . (int) $entry['y'] . 'px;';
+};
+
+$height = (int) $map['height'];
+?>
+<div class="legacy-map legacy-map--<?php echo $escapeAttr($map['id']); ?>">
+    <div class="legacy-map__scroll" role="region" tabindex="0" aria-label="<?php echo $escapeAttr($map['title']); ?>">
+        <div class="legacy-map__canvas" style="height:<?php echo $height; ?>px;">
+            <img class="legacy-map__img" src="<?php echo $escapeAttr($img($map['base']['src'])); ?>" alt="<?php echo $escapeAttr($map['base']['alt']); ?>" width="800" height="<?php echo $height; ?>">
+            <?php foreach ($map['layers'] as $layer): ?>
+            <img class="legacy-map__img" data-layer="<?php echo $escapeAttr($layer['key']); ?>" src="<?php echo $escapeAttr($img($layer['image'])); ?>" alt="" width="800" height="<?php echo $height; ?>">
+            <?php endforeach; ?>
+
+            <fieldset class="legacy-map__legend">
+                <legend class="legacy-map__legend-title"><?php echo $escape($this->translate('Show on map')); ?></legend>
+                <?php foreach ($map['layers'] as $layer): ?>
+                <label class="legacy-map__toggle legacy-map--<?php echo $escapeAttr($layer['key']); ?>">
+                    <input type="checkbox" checked data-layer-toggle="<?php echo $escapeAttr($layer['key']); ?>">
+                    <?php echo $escape($layer['label']); ?>
+                </label>
+                <?php endforeach; ?>
+                <?php foreach ($map['links'] ?? [] as $entry): ?>
+                <p class="legacy-map__page-link"><?php echo $link($entry); ?></p>
+                <?php endforeach; ?>
+            </fieldset>
+
+            <?php foreach ($map['layers'] as $layer): ?>
+            <ul class="legacy-map__labels legacy-map--<?php echo $escapeAttr($layer['key']); ?>" data-layer="<?php echo $escapeAttr($layer['key']); ?>" aria-label="<?php echo $escapeAttr($layer['label']); ?>">
+                <?php foreach ($layer['entries'] as $entry): ?>
+                <?php if (!empty($entry['group'])): ?>
+                <li class="legacy-map__label legacy-map__group legacy-map__group--<?php echo $escapeAttr($entry['style'] ?? 'line'); ?>" style="<?php echo $position($entry); ?>">
+                    <ul>
+                        <?php foreach ($entry['group'] as $member): ?>
+                        <li><?php echo $link($member); ?></li>
+                        <?php endforeach; ?>
+                    </ul>
+                </li>
+                <?php else: ?>
+                <li class="legacy-map__label<?php echo isset($entry['style']) ? ' legacy-map__label--' . $escapeAttr($entry['style']) : ''; ?>" style="<?php echo $position($entry); ?>"><?php echo $link($entry); ?></li>
+                <?php endif; ?>
+                <?php endforeach; ?>
+            </ul>
+            <?php endforeach; ?>
+        </div>
+    </div>
+</div>

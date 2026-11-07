@@ -1,0 +1,130 @@
+<?php
+/**
+ * HTML block template: legacy New England image map.
+ * The block's own HTML shows above the map. The Martha's Vineyard map page
+ * must have the slug in $mvSlug.
+ *
+ * Positions come from the legacy site.css. Entries nested under Massachusetts
+ * add the Massachusetts offset (x 120, y 150), as the original CSS did.
+ */
+$mvSlug = 'map-mv';
+$SP = 'dcterms:spatial';
+$EG = 'mr:ethnicGroup';
+$in = function ($prop, $value) {
+    return ['p' => $prop, 't' => 'in', 'v' => $value];
+};
+
+$map = [
+    'id' => 'ne',
+    'title' => 'New England map',
+    'height' => 583,
+    'base' => [
+        'src' => 'ne-base.jpg',
+        'alt' => 'Map of southern New England. Place names on the map link to related items.',
+    ],
+    'links' => [],
+    'layers' => [
+        [
+            'key' => 'tribes',
+            'label' => 'Tribal Boundaries',
+            'image' => 'bg-tribes.gif',
+            'entries' => [
+                ['x' => 375, 'y' => 202, 'text' => 'Massachusett', 'q' => $in($EG, 'Algonquian - Massachusett')],
+                ['x' => 95, 'y' => 336, 'text' => 'Pequot-Mohegan', 'q' => $in($EG, 'Algonquian - Pequot-Mohegan')],
+                ['x' => 230, 'y' => 332, 'text' => 'Narragansett', 'q' => $in($EG, 'Algonquian - Narragansett')],
+                ['x' => 163, 'y' => 190, 'text' => 'Nipmuck', 'q' => ['ft' => 'Nipmuc']],
+                ['x' => 395, 'y' => 280, 'text' => 'Wampanoag', 'q' => $in($EG, 'Algonquian - Wampanoag')],
+            ],
+        ],
+        [
+            'key' => 'states',
+            'label' => 'States & Areas',
+            'image' => 'bg-states.gif',
+            'entries' => [
+                ['x' => 90, 'y' => 315, 'text' => 'Connecticut', 'q' => $in($SP, 'Connecticut')],
+                ['x' => 120, 'y' => 150, 'text' => 'Massachusetts', 'q' => $in($SP, 'Massachusetts')],
+                ['x' => 473, 'y' => 391, 'text' => "Click for map of Martha's Vineyard", 'page' => $mvSlug, 'style' => 'box'],
+                ['x' => 649, 'y' => 433, 'text' => 'Nantucket', 'q' => $in($SP, 'Nantucket Island')],
+                ['x' => 635, 'y' => 315, 'text' => 'Cape Cod', 'q' => $in($SP, 'Cape Cod')],
+                ['x' => 503, 'y' => 255, 'style' => 'plain', 'group' => [
+                    ['text' => 'Plimoth Plantation', 'q' => $in($SP, 'Plimoth Plantation')],
+                    ['text' => 'Wampanoag Homesite', 'q' => $in($SP, 'Wampanoag Homesite')],
+                ]],
+                ['x' => 450, 'y' => 375, 'text' => 'Elizabeth Islands', 'q' => $in($SP, 'Elizabeth Islands')],
+                ['x' => 240, 'y' => 295, 'text' => 'Rhode Island', 'q' => $in($SP, 'Rhode Island')],
+            ],
+        ],
+        [
+            'key' => 'towns',
+            'label' => 'Towns',
+            'image' => 'bg-towns.gif',
+            'entries' => [
+                ['x' => 400, 'y' => 135, 'text' => 'Boston', 'q' => $in($SP, 'Boston [Massachusetts]')],
+                ['x' => 337, 'y' => 167, 'text' => 'Natick', 'q' => $in($SP, 'Natick [Massachusetts]')],
+                ['r' => 303, 'y' => 248, 'text' => 'Plymouth', 'q' => $in($SP, 'Plymouth - Cape Cod [Massachusetts]')],
+                ['r' => 237, 'y' => 313, 'text' => 'Sandwich', 'q' => $in($SP, 'Sandwich - Cape Cod [Massachusetts]')],
+                ['x' => 134, 'y' => 381, 'text' => 'Mohegan', 'q' => ['ft' => 'Mohegan']],
+                ['r' => 243, 'y' => 336, 'text' => 'Mashpee', 'q' => $in($SP, 'Mashpee - Cape Cod [Massachusetts]')],
+                ['x' => 344, 'y' => 386, 'text' => 'Newport', 'q' => $in($SP, 'Newport [Rhode Island]')],
+            ],
+        ],
+        [
+            'key' => 'cemeteries',
+            'label' => 'Cemeteries',
+            'image' => 'bg-cem.gif',
+            'entries' => [
+                ['x' => 301, 'y' => 61, 'text' => 'Dunstable Cemetery', 'q' => $in($SP, 'Dunstable Cemetery')],
+                ['r' => 537, 'y' => 62, 'text' => 'Pepperell Cemetery', 'q' => $in($SP, 'Pepperell Cemetery')],
+                ['x' => 346, 'y' => 72, 'text' => 'Lowell Cemetery', 'q' => $in($SP, 'Lowell Cemetery')],
+                ['r' => 533, 'y' => 78, 'text' => 'Groton Cemetery', 'q' => $in($SP, 'Groton Cemetery')],
+                ['r' => 404, 'y' => 149, 'text' => 'First Church of Cambridge Cemetery', 'q' => $in($SP, 'First Church, Cambridge')],
+                ['x' => 540, 'y' => 169, 'group' => [
+                    ['text' => "Copp's Hill Cemetery", 'q' => $in($SP, "Copp's Hill")],
+                    ['text' => "King's Chapel Cemetery", 'q' => $in($SP, "King's Chapel")],
+                ]],
+                ['x' => 562, 'y' => 347, 'text' => 'Old Indian Cemetery', 'q' => $in($SP, 'Old Indian Cemetery')],
+                ['x' => 371, 'y' => 362, 'text' => 'Little Compton Cemetery', 'q' => $in($SP, 'Little Compton Cemetery')],
+                ['r' => 636, 'y' => 435, 'style' => 'right', 'group' => [
+                    ['text' => 'Common Burying Ground', 'q' => $in($SP, 'Common Burying Ground')],
+                    ['text' => 'Quaker Cemetery', 'q' => $in($SP, 'Quaker Cemetery')],
+                    ['text' => 'Touro Cemetery', 'q' => $in($SP, 'Touro Cemetery')],
+                    ['text' => 'Trinity Church Cemetery', 'q' => $in($SP, 'Trinity Church Cemetery')],
+                    ['text' => 'Braman Jewish Cemetery', 'q' => $in($SP, 'Braman Cemetery')],
+                ]],
+            ],
+        ],
+        [
+            'key' => 'churches',
+            'label' => 'Churches',
+            'image' => 'bg-churches.gif',
+            'entries' => [
+                ['r' => 412, 'y' => 131, 'text' => 'First Church', 'q' => $in($SP, 'First Church, Cambridge')],
+                ['x' => 470, 'y' => 112, 'group' => [
+                    ['text' => 'Old North Church', 'q' => $in($SP, 'Old North Church')],
+                    ['text' => 'Park Street Church', 'q' => $in($SP, 'Park Street Church')],
+                    ['text' => "St. Leonard's Catholic Church", 'q' => $in($SP, 'St. Leonard')],
+                ]],
+                ['x' => 558, 'y' => 298, 'text' => 'First Church of Christ', 'q' => $in($SP, 'First Church of Christ, Sandwich')],
+                ['x' => 567, 'y' => 332, 'text' => 'Old Indian Meeting House', 'q' => $in($SP, 'Old Indian Meeting House')],
+                ['r' => 687, 'y' => 381, 'text' => 'Mohegan Chapel', 'q' => $in($SP, 'Mohegan Chapel')],
+                ['x' => 376, 'y' => 470, 'style' => 'cols', 'group' => [
+                    ['text' => 'Touro Synagogue', 'q' => $in($SP, 'Touro Synagogue')],
+                    ['text' => 'Trinity Church', 'q' => $in($SP, 'Trinity Church, Newport')],
+                    ['text' => 'First Congregational Church', 'q' => $in($SP, 'First Congregational Church, Newport')],
+                    ['text' => 'First Free African American Church', 'q' => $in($SP, 'First Free African American Church')],
+                    ['text' => 'Mikva House', 'q' => $in($SP, 'Mikva House')],
+                    ['text' => "St. John's Masonic Lodge", 'q' => $in($SP, 'Masonic Lodge')],
+                    ['text' => 'Baptist Church', 'q' => $in($SP, 'Baptist Church, Newport')],
+                    ['text' => 'Quaker Meeting House', 'q' => $in($SP, 'Quaker Meeting House')],
+                    ['text' => "St. Joseph's Rectory", 'q' => $in($SP, 'St. Joseph')],
+                    ['text' => 'Jesus Saviour Catholic Church', 'q' => $in($SP, 'Jesus Sav')],
+                    ['text' => "St. Peter's Lutheran Church", 'q' => $in($SP, 'St. Peter')],
+                    ['text' => 'Second Congregational Church', 'q' => $in($SP, 'Second Congregational Church')],
+                ]],
+            ],
+        ],
+    ],
+];
+
+echo $block->dataValue('html', '');
+echo $this->partial('common/legacy-map', ['map' => $map]);

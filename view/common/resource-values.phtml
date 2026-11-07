@@ -1,0 +1,106 @@
+<?php
+// Theme override of core's common/resource-values.phtml.
+// Adds: literal/customvocab/numeric term values link to a browse page
+// showing the found set of items sharing that same property value.
+$translate = $this->plugin('translate');
+$escape = $this->plugin('escapeHtml');
+
+$labelInfo = $this->fallbackSetting('property_label_information', ['site', 'global'], 'none');
+$showLocale = (bool) $this->fallbackSetting('show_locale_label', ['site'], true);
+$filterLocale = (bool) $this->fallbackSetting('filter_locale_values', ['site'], false);
+$showValueAnnotations = (bool) $this->fallbackSetting('show_value_annotations', ['site'], true);
+$lang = $this->lang();
+
+$filterLocaleCallback = function ($value) use ($lang) {
+    $valueLang = $value->lang();
+    return $valueLang == '' || strcasecmp($valueLang, $lang) === 0;
+};
+?>
+<?php if (count($values) > 0): ?>
+<dl>
+<?php
+foreach ($values as $term => $propertyData):
+    $propertyValues = $propertyData['values'];
+    if ($filterLocale) {
+        $propertyValues = array_filter($propertyValues, $filterLocaleCallback);
+    }
+    if (!$propertyValues) {
+        continue;
+    }
+    $property = $propertyData['property'];
+    $propertyLabel = $propertyData['alternate_label'] ?: $translate($property->label());
+    if ('term' === $labelInfo) {
+        $propertyTerm = $property->term();
+    } elseif ('vocab' === $labelInfo) {
+        $propertyTerm = $property->vocabulary()->label();
+    } else {
+        $propertyTerm = null;
+    }
+?>
+    <div class="property">
+        <dt>
+        <?php echo $escape($propertyLabel); ?>
+        <?php if ($propertyTerm !== null): ?>
+        <span class="field-term">(<?php echo $escape($propertyTerm); ?>)</span>
+        <?php endif; ?>
+        </dt>
+        <?php foreach ($propertyValues as $value): ?>
+        <?php
+        $valueType = $value->type();
+        $valueLang = $value->lang();
+        $valueAnnotation = $value->valueAnnotation();
+        $isResource = ('resource' == $valueType || strpos($valueType, 'resource') !== false);
+        $isUri = ('uri' == $valueType);
+        $class = ['value'];
+        if ($isResource) {
+            $class[] = 'resource';
+            $class[] = $escape($value->valueResource()->resourceName());
+        } elseif ($isUri) {
+            $class[] = 'uri';
+        } else {
+            $class[] = $escape(str_replace(['_', ':'], '-', $valueType));
+        }
+
+        // Only literal-like values (not resource or uri, which already link
+        // elsewhere) get wrapped in a link to the found set of items sharing
+        // this same term value.
+        $browseUrl = null;
+        if (!$isResource && !$isUri) {
+            $browseUrl = $this->url('site/resource', ['controller' => 'item', 'action' => 'browse'], [
+                'query' => ['property' => [[
+                    'property' => $property->id(),
+                    'type' => 'eq',
+                    'text' => $value->value(),
+                ]]],
+            ], true);
+        }
+        ?>
+        <dd class="<?php echo implode(' ', $class); ?>" lang="<?php echo $escape($valueLang); ?>">
+            <?php if ($showLocale && $valueLang): ?>
+            <span class="language"><?php echo $valueLang; ?></span>
+            <?php endif; ?>
+            <span class="value-content">
+                <?php if ($browseUrl): ?>
+                <a class="value-link" href="<?php echo $escape($browseUrl); ?>" title="<?php echo $escape(sprintf($translate('Find items with %s: %s'), $propertyLabel, $value->value())); ?>"><?php echo $filterLocale ? $value->asHtml($lang) : $value->asHtml(); ?></a>
+                <?php else: ?>
+                <?php echo $filterLocale ? $value->asHtml($lang) : $value->asHtml(); ?>
+                <?php endif; ?>
+            </span>
+            <?php if(!$value->isPublic()): ?>
+                <span class="o-icon-private" role="img" title="<?php echo $this->escapeHtml($translate('Private')); ?>" aria-label="<?php echo $this->escapeHtml($translate('Private')); ?>"></span>
+            <?php endif; ?>
+            <?php if ($valueAnnotation && $showValueAnnotations): ?>
+                <a href="#" class="<?php echo ('expanded' === $showValueAnnotations) ? 'collapse' : 'expand'; ?>" aria-label="<?php echo ('expanded' === $showValueAnnotations) ? $this->escapeHtml($translate('Collapse')) : $this->escapeHtml($translate('Expand')); ?>">
+                    <span class="has-annotation o-icon-annotation" role="img" title="<?php echo $this->escapeHtml($translate('Has annotation')); ?>" aria-label="<?php echo $this->escapeHtml($translate('Has annotation')); ?>"></span>
+                </a>
+                <div class="collapsible annotation">
+                    <?php echo $valueAnnotation->displayValues(); ?>
+                </div>
+            <?php endif; ?>
+            <?php $this->trigger('view.show.value', ['value' => $value]); ?>
+        </dd>
+        <?php endforeach; ?>
+    </div>
+<?php endforeach; ?>
+</dl>
+<?php endif; ?>

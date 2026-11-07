@@ -1,0 +1,34 @@
+<?php
+/**
+ * Header search: a magnifier toggle that opens a full-header search overlay.
+ * Form action mirrors Omeka's common/search-form partial.
+ */
+$translate = $this->plugin('translate');
+$escape = $this->plugin('escapeHtml');
+$searchType = $this->siteSetting('search_type', 'sitewide');
+switch ($searchType) {
+    case 'cross-site':
+        $searchAction = $this->url('site/cross-site-search', ['action' => 'results'], true);
+        break;
+    case 'sitewide':
+    default:
+        $searchAction = $this->url('site/resource', ['controller' => 'index', 'action' => 'search'], true);
+}
+$searchValue = $escape($this->params()->fromQuery('fulltext_search', ''));
+?>
+<button type="button" id="search-toggle" aria-expanded="false" aria-controls="search-overlay"
+    aria-label="<?php echo $translate('Open search'); ?>" title="<?php echo $translate('Search'); ?>">
+    <span class="o-icon-search" aria-hidden="true"></span>
+</button>
+<div id="search-overlay" role="dialog" aria-modal="true" aria-label="<?php echo $translate('Search'); ?>" hidden>
+    <div class="search-overlay-inner">
+        <form action="<?php echo $escape($searchAction); ?>" id="search-form" role="search">
+            <input type="text" id="fulltext-search" name="fulltext_search" value="<?php echo $searchValue; ?>"
+                placeholder="<?php echo $translate('Search'); ?>"
+                aria-label="<?php echo $translate('Search'); ?>" autocomplete="off">
+            <button id="search-submit" type="submit" class="visually-hidden"><?php echo $translate('Submit'); ?></button>
+        </form>
+        <button type="button" id="search-close" aria-label="<?php echo $translate('Close search'); ?>" title="<?php echo $translate('Close'); ?>"></button>
+        <p class="search-hint"><?php echo $translate('Hit enter to search or ESC to close'); ?></p>
+    </div>
+</div>

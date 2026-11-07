@@ -1,0 +1,75 @@
+<?php
+/**
+ * HTML block template: legacy Martha's Vineyard image map.
+ * The block's own HTML shows above the map. The New England map page must
+ * have the slug in $neSlug.
+ */
+$neSlug = 'map-ne';
+$SP = 'dcterms:spatial';
+
+$map = [
+    'id' => 'mv',
+    'title' => "Martha's Vineyard map",
+    'height' => 391,
+    'base' => [
+        'src' => 'mv-base.jpg',
+        'alt' => "Map of Martha's Vineyard. Place names on the map link to related items.",
+    ],
+    'links' => [
+        ['text' => '« Return to New England map', 'page' => $neSlug],
+    ],
+    'layers' => [
+        [
+            'key' => 'tribes',
+            'label' => 'Sachemdoms',
+            'image' => 'bg-mv-sach.jpg',
+            // No items carry sachemdom values, so these are plain labels.
+            'entries' => [
+                ['x' => 70, 'y' => 320, 'text' => 'Aquinnah / Gay Head'],
+                ['x' => 181, 'y' => 222, 'text' => 'Nashawakewmuck (North)'],
+                ['x' => 191, 'y' => 272, 'text' => 'Nashawakewmuck (South) / Squibnocket'],
+                ['x' => 336, 'y' => 189, 'text' => 'Takemmeh'],
+                ['x' => 485, 'y' => 169, 'text' => 'Nanpauk'],
+                ['x' => 687, 'y' => 227, 'text' => 'Chappaquiddick'],
+            ],
+        ],
+        [
+            'key' => 'towns',
+            'label' => 'Towns',
+            'image' => 'bg-mv-towns.gif',
+            'entries' => [
+                ['x' => 61, 'y' => 280, 'text' => 'Gay Head', 'q' => ['p' => $SP, 't' => 'in', 'v' => 'Gay Head - ']],
+            ],
+        ],
+        [
+            'key' => 'cemeteries',
+            'label' => 'Cemeteries',
+            'image' => 'bg-mv-cem.gif',
+            'entries' => [
+                ['x' => 369, 'y' => 166, 'text' => 'Village Cemetery', 'q' => ['p' => $SP, 't' => 'in', 'v' => 'Village Cemetery']],
+                ['r' => 152, 'y' => 201, 'text' => 'Mayhew Gravestones', 'q' => ['p' => 'mr:familyName', 't' => 'eq', 'v' => 'Mayhew Family']],
+                ['x' => 210, 'y' => 290, 'text' => "Abel's Hill Cemetery", 'q' => ['p' => $SP, 't' => 'in', 'v' => "Abel's Hill Cemetery"]],
+                ['x' => 45, 'y' => 268, 'text' => 'Gay Head Cemetery', 'q' => ['p' => $SP, 't' => 'in', 'v' => 'Gay Head Cemetery']],
+            ],
+        ],
+        [
+            'key' => 'churches',
+            'label' => 'Churches',
+            'image' => 'bg-mv-churches.gif',
+            'entries' => [
+                ['x' => 606, 'y' => 291, 'group' => [
+                    ['text' => 'Federated Church', 'q' => ['p' => $SP, 't' => 'in', 'v' => 'Federated Church']],
+                    ['text' => 'Old Whaling Church', 'q' => ['p' => $SP, 't' => 'in', 'v' => 'Old Whaling Church']],
+                    ['text' => 'Second Meeting House', 'q' => ['p' => $SP, 't' => 'in', 'v' => 'Second Meeting House']],
+                    ['text' => 'Fourth Meeting House', 'q' => ['p' => $SP, 't' => 'in', 'v' => 'Fourth Meeting House']],
+                    ['text' => 'Fifth Edgartown Meeting House', 'q' => ['p' => $SP, 't' => 'in', 'v' => 'Fifth Edgartown Meeting House']],
+                ]],
+                ['x' => 341, 'y' => 210, 'text' => 'Mayhew Chapel', 'q' => ['p' => $SP, 't' => 'in', 'v' => 'Mayhew Chapel']],
+                ['x' => 62, 'y' => 296, 'text' => 'Indian Chapel', 'q' => ['p' => $SP, 't' => 'in', 'v' => 'Indian Chapel']],
+            ],
+        ],
+    ],
+];
+
+echo $block->dataValue('html', '');
+echo $this->partial('common/legacy-map', ['map' => $map]);

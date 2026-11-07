@@ -1,0 +1,193 @@
+/*
+ * Legacy image maps (Indian Converts). Used by view/common/legacy-map.phtml.
+ * Fixed 800px canvas with pixel-positioned labels, as on the original site.
+ * On narrow screens the canvas scrolls sideways inside its own region
+ * (maps are an exception to WCAG 1.4.10 Reflow). Text is 11px, as on the
+ * original, so labels keep their original spacing.
+ * Layer colors are darkened from the originals to meet WCAG AA contrast.
+ */
+.legacy-map {
+    --lm-tribes: #004da8;
+    --lm-states: #4d4d4d;
+    --lm-towns: #000;
+    --lm-cemeteries: #006b00;
+    --lm-churches: #b30000;
+    --lm-border: #666;
+    --lm-panel: #fff;
+    margin: 1.5rem 0;
+}
+
+.legacy-map__scroll {
+    overflow-x: auto;
+    padding: 2px;
+}
+
+.legacy-map__scroll:focus-visible {
+    outline: 2px solid #000;
+    outline-offset: 2px;
+}
+
+.legacy-map__canvas {
+    position: relative;
+    width: 800px;
+    margin: 0 auto;
+    border: 1px solid var(--lm-border);
+    font: 11px/1.3 Arial, Helvetica, sans-serif;
+    isolation: isolate;
+}
+
+.legacy-map__img {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 800px;
+    max-width: none;
+    height: auto;
+}
+
+.legacy-map ul,
+.legacy-map li {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+.legacy-map a {
+    color: inherit;
+    text-decoration: none;
+}
+
+.legacy-map a:hover {
+    text-decoration: underline;
+}
+
+.legacy-map a:focus-visible {
+    outline: 2px solid #000;
+    outline-offset: 1px;
+    background: #fff;
+    text-decoration: underline;
+}
+
+/* Legend box: top left, as on the original site */
+.legacy-map__legend {
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: 3;
+    width: max-content;
+    min-width: 12em;
+    margin: 0;
+    padding: 5px 7px;
+    border: 0;
+    border-right: 1px solid var(--lm-border);
+    border-bottom: 1px solid var(--lm-border);
+    background: var(--lm-panel);
+}
+
+.legacy-map__legend-title {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip: rect(0 0 0 0);
+    white-space: nowrap;
+}
+
+.legacy-map__toggle {
+    display: flex;
+    gap: 4px;
+    align-items: center;
+    margin: 2px 0;
+    cursor: pointer;
+}
+
+.legacy-map__toggle input {
+    margin: 0;
+}
+
+.legacy-map__page-link {
+    margin: 6px 0 0;
+}
+
+.legacy-map__page-link a {
+    display: block;
+    padding: 2px 4px;
+    background: #37415f;
+    color: #fff;
+    font-weight: bold;
+}
+
+.legacy-map__page-link a:focus-visible {
+    background: #37415f;
+    outline-color: #000;
+}
+
+/* Positioned labels */
+.legacy-map__label {
+    position: absolute;
+    z-index: 2;
+    white-space: nowrap;
+    text-shadow: 0 0 2px #fff, 0 0 2px #fff, 0 0 3px #fff;
+}
+
+.legacy-map__group ul {
+    padding: 3px 0 0 5px;
+    border-top: 1px solid;
+    border-left: 1px solid;
+}
+
+.legacy-map__group--right {
+    text-align: right;
+}
+
+.legacy-map__group--right ul {
+    padding: 3px 3px 0 0;
+    border-left: 0;
+    border-right: 1px solid;
+}
+
+.legacy-map__group--plain ul {
+    padding: 0;
+    border: 0;
+}
+
+.legacy-map__group--cols ul {
+    display: grid;
+    grid-template-columns: 15em 15em;
+    width: 33em;
+}
+
+.legacy-map__label--box {
+    width: 84px;
+    padding: 3px;
+    border: 1px solid #999;
+    background: rgb(255 255 255 / 0.85);
+    white-space: normal;
+    text-align: center;
+    text-shadow: none;
+}
+
+.legacy-map__label--box a {
+    color: #333;
+}
+
+/* Layer colors */
+.legacy-map--tribes { color: var(--lm-tribes); }
+.legacy-map--states { color: var(--lm-states); }
+.legacy-map--towns { color: var(--lm-towns); }
+.legacy-map--cemeteries { color: var(--lm-cemeteries); }
+.legacy-map--churches { color: var(--lm-churches); }
+
+/* Tribal names are uppercase on the New England map only */
+.legacy-map--ne .legacy-map__labels.legacy-map--tribes {
+    text-transform: uppercase;
+}
+
+/* Show/hide layers with the legend checkboxes (no JavaScript) */
+.legacy-map:has([data-layer-toggle="tribes"]:not(:checked)) [data-layer="tribes"],
+.legacy-map:has([data-layer-toggle="states"]:not(:checked)) [data-layer="states"],
+.legacy-map:has([data-layer-toggle="towns"]:not(:checked)) [data-layer="towns"],
+.legacy-map:has([data-layer-toggle="cemeteries"]:not(:checked)) [data-layer="cemeteries"],
+.legacy-map:has([data-layer-toggle="churches"]:not(:checked)) [data-layer="churches"] {
+    display: none;
+}

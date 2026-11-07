@@ -104,7 +104,7 @@
                 if (nextParentLi.length > 0) {
                     nextParentLi.focus();
                 } else {
-                    $('#search-form input:first-child').focus();
+                    $('#search-toggle').focus();
                 }
                 closeChildNav(parentLi);
             }
@@ -117,6 +117,66 @@
             }
         });
         
+        // Header search overlay
+        var searchToggle = $('#search-toggle');
+        var searchOverlay = $('#search-overlay');
+        var searchInput = searchOverlay.find('#fulltext-search');
+
+        var openSearch = function() {
+            searchOverlay.prop('hidden', false);
+            searchToggle.attr('aria-expanded', 'true');
+            $('body').addClass('search-open');
+            var input = searchInput.get(0);
+            if (input) {
+                input.focus();
+                input.setSelectionRange(input.value.length, input.value.length);
+            }
+        };
+
+        var closeSearch = function() {
+            if (searchOverlay.prop('hidden')) {
+                return;
+            }
+            searchOverlay.prop('hidden', true);
+            searchToggle.attr('aria-expanded', 'false');
+            $('body').removeClass('search-open');
+            searchToggle.focus();
+        };
+
+        searchToggle.on('click', openSearch);
+        $('#search-close').on('click', closeSearch);
+
+        $(document).on('keydown', function(e) {
+            if (e.key === 'Escape') {
+                closeSearch();
+            }
+        });
+
+        // Click outside the overlay closes it
+        $(document).on('mousedown', function(e) {
+            if (!searchOverlay.prop('hidden')
+                && !$(e.target).closest('#search-overlay, #search-toggle').length) {
+                closeSearch();
+            }
+        });
+
+        // Keep keyboard focus inside the overlay while it is open
+        searchOverlay.on('keydown', function(e) {
+            if (e.key !== 'Tab') {
+                return;
+            }
+            var focusable = searchOverlay.find('input, #search-close');
+            var first = focusable.first().get(0);
+            var last = focusable.last().get(0);
+            if (e.shiftKey && document.activeElement === first) {
+                e.preventDefault();
+                last.focus();
+            } else if (!e.shiftKey && document.activeElement === last) {
+                e.preventDefault();
+                first.focus();
+            }
+        });
+
         // Maintain iframe aspect ratios
         $(window).on('load resize', framerateCallback(fixIframeAspect));
         fixIframeAspect();
