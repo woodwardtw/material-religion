@@ -18,7 +18,7 @@ $searchValue = $escape($this->params()->fromQuery('fulltext_search', ''));
 ?>
 <button type="button" id="search-toggle" aria-expanded="false" aria-controls="search-overlay"
     aria-label="<?php echo $translate('Open search'); ?>" title="<?php echo $translate('Search'); ?>">
-    <span class="o-icon-search" aria-hidden="true"></span>
+    <span class="search-icon" aria-hidden="true"></span>
 </button>
 <div id="search-overlay" role="dialog" aria-modal="true" aria-label="<?php echo $translate('Search'); ?>" hidden>
     <div class="search-overlay-inner">

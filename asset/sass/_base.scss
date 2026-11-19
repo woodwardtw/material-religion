@@ -1,60 +1,236 @@
-// Material Religion — Princeton University Brand Variables
+@use "variables" as *;
 
-// Colors
+/* ─── Custom Properties ──────────────────────────────────────────────────── */
+
 :root {
-    --orange:    #E87722;
-    --black:     #000000;
-    --white:     #FFFFFF;
-    --bg:        #F7F4EF;
-    --bg-alt:    #EEEBE4;
-    --border:    #D6D1C8;
-    --gray:      #9C9693;
-    --gray-dark: #3A3635;
-    --gray-light:#E8E4DD;
-    --accent:    var(--orange);
-    --bold:      var(--black);
-    --light:     var(--border);
+    /* Brand palette — exact values from the guidelines */
+    --atlantic-blue:  #{$atlantic-blue};           /* primary */
+    --caribbean-blue: #{$caribbean-blue};
+    --night:          #{$night};           /* image overlays */
+    --dusk:           #{$dusk};           /* headers & text */
+    --mist:           #{$mist};           /* strokes */
+    --pu-orange:      #{$pu-orange};           /* tertiary, unused for now */
+    --pu-deep-red:    #{$pu-deep-red};
+    --pu-deep-green:  #{$pu-deep-green};
+
+    --brand:      var(--atlantic-blue);  /* header, footer, dark blocks, h1/h2 */
+    --brand-dark: var(--night);          /* footer bottom bar */
+    --header-bg:  var(--atlantic-blue);
+    --button-gradient: linear-gradient(125deg, var(--caribbean-blue), var(--atlantic-blue));
+    --button-solid:    var(--caribbean-blue);
+    --nav-stroke:        var(--caribbean-blue); /* main-nav hover underline */
+    --current-underline: var(--caribbean-blue); /* underline on the current page's menu item */
+    --accent:     var(--caribbean-blue); /* links, h3, highlights (overridable via theme setting) */
+    --black:      #000000;
+    --white:      #{$white};
+    --text:       var(--dusk);
+    --bg:         #ffffff;
+    --bg-alt:     #f3f5f8;               /* light tint of Mist for hover rows / blockquotes */
+    --border:     var(--mist);
+    --gray:       var(--dusk);           /* small labels: old #8A9399 was 3.1:1, below the 4.5:1 minimum */
+    --gray-dark:  var(--text);
+    --gray-light: #e8ecf1;               /* lighter Mist tint for chips/underlines */
+
+    /* aliases the default theme references */
+    --bold:    var(--brand);
+    --light:   var(--border);
+
+    --font-sans:    'Libre Franklin', Arial, sans-serif;
+    --font-serif:   'Playfair Display', Georgia, serif;
+    --font-heading: var(--font-serif);
+    --font-h4:      var(--font-sans);    /* H4 is Libre Franklin Medium per the type scale */
+    --font-button:  var(--font-sans);
+
+    --base-font: 16px;
+    --base-line: 28px;                   /* body 16px / 1.75 */
+    --sp-xs: 8px;
+    --sp-sm: 16px;
+    --sp-md: 32px;
+    --sp-lg: 64px;
+
+    --container-max: 1500px;
+    --container-pad: 90px;
+    /* horizontal inset that lines full-bleed bars up with the centered container */
+    --container-inset: max(var(--container-pad), calc((100% - var(--container-max)) / 2 + var(--container-pad)));
 }
 
-// Typography
-$font-sans: 'Libre Franklin', 'Franklin Gothic Medium', Arial, sans-serif;
-$font-serif: 'Playfair Display', 'Times New Roman', Georgia, serif;
-$base-font-size: 20px;
-$base-line-height: 30px;
+/* ─── Box Model ──────────────────────────────────────────────────────────── */
 
-// Spacing
-$spacing-s: .25 * $base-line-height;
-$spacing-m: .5  * $base-line-height;
-$spacing-l: $base-line-height;
+*, *::before, *::after { box-sizing: border-box; }
+html { height: 100%; padding: 0; margin: 0; }
 
-// Mixins
-@mixin container {
-    max-width: 1700px;
-    margin-left: auto;
-    margin-right: auto;
+/* ─── Base Typography ────────────────────────────────────────────────────── */
+
+body {
+    background-color: var(--bg);
+    font-family: var(--font-sans);
+    font-size: var(--base-font);
+    font-weight: 400;
+    line-height: var(--base-line);
+    color: var(--text);
+    margin: 0;
+    word-wrap: break-word;
+    overflow-x: hidden;
 }
 
-@mixin button {
+h1, h2, h3, h4, h5, h6 {
+    font-family: var(--font-heading);
+    font-weight: 400;
+    color: var(--brand);
+    margin-top: 0;
+}
+
+/* Brand type scale (max sizes are the guideline values; h1–h3 scale down on small screens) */
+h1 { font-size: clamp(2.25rem, 4.5vw, 3.75rem);  line-height: 1.25; letter-spacing: 1px; margin-bottom: var(--sp-sm); }  /* 60px */
+h2 { font-size: clamp(1.875rem, 3.5vw, 2.375rem); line-height: 1.25; letter-spacing: 1px; margin-bottom: 10px; }          /* 38px */
+h3 { font-size: clamp(1.625rem, 3vw, 2rem);       line-height: 1.25; letter-spacing: 1px; color: var(--accent); margin: 0.35em 0 24px; } /* 32px */
+h4 { font-family: var(--font-h4); font-size: 1.25rem; font-weight: 500; line-height: 1.25; letter-spacing: 1px; color: var(--dusk); margin-bottom: 20px; } /* 20px */
+h5 { font-size: 1.5rem;   line-height: 1.35; letter-spacing: 1px; color: var(--dusk); }  /* 24px */
+h6 { font-family: var(--font-sans); font-size: 1.125rem; line-height: 1.25; letter-spacing: 2px; text-transform: uppercase; color: var(--dusk); } /* 18px */
+
+/* <h2><span class="title">…</span></h2> (e.g. "Items" on search results) */
+h2:has(> .title),
+div.items.results h2:has(> .title) { margin-bottom: 30px; }
+
+p  { margin-top: 0; margin-bottom: 0; padding-bottom: 24px; }
+
+img { max-width: 100%; height: auto; }
+
+/* Framed images in page content: same color as table row lines */
+#content img {
+    padding: 5px;
+    border: 1px solid var(--border);
+    background-color: var(--white);
+}
+/* …but never on map images: Leaflet tiles/markers (Mapping module)
+   or the theme's custom legacy maps */
+#content .leaflet-container img,
+#content .legacy-map img {
+    padding: 0;
+    border: 0;
+    background-color: transparent;
+    max-width: none;
+}
+
+/* ─── Links ──────────────────────────────────────────────────────────────── */
+
+a:link, a:visited { color: var(--accent); text-decoration: none; }
+a:hover, a:active { color: var(--brand);  text-decoration: underline; }
+
+/* ─── Buttons ────────────────────────────────────────────────────────────── */
+
+button,
+.button,
+a.button,
+a.button:visited,
+[type="submit"],
+input[type="submit"] {
     display: inline-block;
     appearance: none;
     -webkit-appearance: none;
-    background-color: var(--orange);
-    color: #fff;
-    border: 2px solid var(--orange);
-    border-radius: 0;
-    padding: $spacing-s $spacing-l;
-    font-family: $font-sans;
-    font-size: .875 * $base-font-size;
-    font-weight: 600;
-    letter-spacing: .05em;
-    text-transform: uppercase;
+    background-color: var(--accent);
+    background-image: var(--button-gradient);
+    color: var(--white);
+    border: 0;
+    border-radius: 4px;
+    padding: 15px 44px 15px 46px;
+    font-family: var(--font-button);
+    font-size: 14px;
+    font-weight: 500;
+    line-height: 20px;
+    letter-spacing: normal;
     cursor: pointer;
     text-decoration: none;
-    transition: background-color .15s ease, color .15s ease;
-
-    &:hover {
-        background-color: #000;
-        border-color: #000;
-        color: #fff;
-    }
+    transition: filter 0.15s, box-shadow 0.15s;
 }
+button:hover,
+.button:hover,
+a.button:hover,
+[type="submit"]:hover {
+    filter: brightness(0.9);
+    box-shadow: 0 6px 14px rgba($atlantic-blue, 0.25);
+    color: var(--white);
+    text-decoration: none;
+}
+
+/* Solid (no gradient) buttons: pagination and the header search submit */
+.pagination-buttons .button,
+#search-submit {
+    background-color: var(--button-solid);
+    background-image: none;
+}
+.pagination-buttons .button:hover,
+#search-submit:hover {
+    background-color: var(--brand);
+    filter: none;
+    box-shadow: none;
+}
+
+/* ─── Forms ──────────────────────────────────────────────────────────────── */
+
+input, textarea, select {
+    font-family: var(--font-sans);
+    font-size: var(--base-font);
+    line-height: var(--base-line);
+    margin: 0;
+    vertical-align: top;
+}
+
+input[type="text"],
+input[type="number"],
+input[type="password"],
+input[type="email"],
+input[type="url"],
+textarea {
+    appearance: none;
+    border-radius: 0;
+    border: 1px solid var(--border);
+    padding: calc(var(--sp-xs) - 1px) var(--sp-xs);
+    background-color: var(--white);
+    color: var(--gray-dark);
+    width: 100%;
+}
+
+input[type="text"]:focus,
+textarea:focus {
+    outline: 2px solid var(--accent);
+    outline-offset: 0;
+    border-color: var(--accent);
+}
+
+textarea { height: 90px; }
+
+select {
+    background-color: var(--white);
+    padding: var(--sp-xs);
+    border: 1px solid var(--border);
+    border-radius: 0;
+}
+
+::-webkit-input-placeholder { font-style: italic; color: var(--gray); }
+:-moz-placeholder            { font-style: italic; color: var(--gray); }
+::-moz-placeholder           { font-style: italic; color: var(--gray); }
+:-ms-input-placeholder       { font-style: italic; color: var(--gray); }
+
+.field { margin: var(--sp-md) 0; display: flex; flex-wrap: wrap; }
+.field .field-meta { padding: var(--sp-xs) calc(1.5 * var(--sp-md)) var(--sp-xs) 0; width: 100%; }
+.field .inputs { width: 100%; }
+.field-description { font-size: 0.75rem; color: var(--gray); }
+.field .value:not(:last-child) { margin-bottom: var(--sp-sm); }
+.field .value select { width: 100%; margin-bottom: var(--sp-xs); }
+
+/* ─── Skip Nav ───────────────────────────────────────────────────────────── */
+
+#skipnav {
+    position: fixed;
+    top: var(--sp-md);
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: -5;
+    padding: var(--sp-xs) var(--sp-sm);
+    background-color: var(--white);
+    border: 2px solid var(--accent);
+    opacity: 0;
+    color: var(--brand);
+}
+#skipnav:focus { z-index: 1000; opacity: 1; }

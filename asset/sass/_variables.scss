@@ -1,0 +1,20 @@
+// Material Religions brand palette — exact values from the
+// Website Brand Guidelines (v11.12.26). These feed the CSS custom
+// properties in _base.scss; style rules use the custom properties so the
+// admin "accent color" theme setting can override --accent at runtime.
+
+// Primary
+$atlantic-blue:  #2d668c;
+
+// Secondary & tertiary
+$caribbean-blue: #289dcc;
+$pu-orange:      #f58025;
+$pu-deep-red:    #930606;
+$pu-deep-green:  #00491e;
+$night:          #2d343d;   // image overlays
+$dusk:           #434a54;   // headers & text
+$mist:           #c5ceda;   // strokes
+$white:          #ffffff;
+
+// Breakpoints
+$bp-desktop: 800px;

@@ -11,7 +11,7 @@ $this->headTitle($siteTitle)->setSeparator(' · ');
 $this->headTitle()->append($this->setting('installation_title', 'Omeka S'));
 $this->headLink()->prependStylesheet($this->assetUrl('css/style.css'));
 $this->headLink()->prependStylesheet($this->assetUrl('css/iconfonts.css', 'Omeka'));
-$this->headLink()->prependStylesheet('https://fonts.googleapis.com/css2?family=Libre+Franklin:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400;1,600&family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400;1,600&family=Prata&family=Rubik:wght@400;500&display=swap');
+$this->headLink()->prependStylesheet('https://fonts.googleapis.com/css2?family=Libre+Franklin:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400;1,600&family=Playfair+Display:ital,wght@0,400;1,400&display=swap');
 $this->headScript()->prependFile($this->assetUrl('js/default.js'));
 $this->headScript()->prependFile($this->assetUrl('js/global.js', 'Omeka'));
 $this->headScript()->prependFile($this->assetUrl('vendor/jquery/jquery.min.js', 'Omeka'));
@@ -39,14 +39,10 @@ $userBar = $this->userBar();
                 <div class="site-title-inner">
                     <h1 class="site-title">
                         <a href="<?php echo $site->url(); ?>">
-                        <?php if ($this->themeSetting('logo')): ?>
-                            <img src="<?php echo $this->themeSettingAssetUrl('logo'); ?>" alt="<?php echo $escape($siteTitle); ?>" />
-                        <?php else: ?>
-                            <?php echo $escape($siteTitle); ?>
-                        <?php endif; ?>
+                        <?php // Admin "Logo" theme setting overrides the bundled knock-out logo (393x160, 2x for an 80px header logo). ?>
+                        <img src="<?php echo $escape($this->themeSetting('logo') ? $this->themeSettingAssetUrl('logo') : $this->assetUrl('img/materialrel-logo.png')); ?>" alt="<?php echo $escape($siteTitle); ?>" width="197" height="80" />
                         </a>
                     </h1>
-                    <div class="site-subtitle">Princeton University</div>
                 </div>
             </div>
             <nav id="top-nav">
@@ -71,14 +67,44 @@ $userBar = $this->userBar();
             <?php echo $this->content; ?>
         </div>
         <footer>
-            <div class="footer-inner">
-                <?php if ($footerContent = $this->themeSetting('footer')): ?>
-                <?php echo $footerContent; ?>
+            <?php
+            $footerColumns = [
+                // Fall back to the legacy single "footer" setting for the left column.
+                'left' => $this->themeSetting('footer_left', $this->themeSetting('footer')),
+                'middle' => $this->themeSetting('footer_middle'),
+                'right' => $this->themeSetting('footer_right'),
+            ];
+            // Let footer HTML reference theme images as "../img/file.png" (or "img/file.png").
+            $themeImagePaths = function ($html) {
+                if (!$html) {
+                    return $html;
+                }
+                return preg_replace_callback(
+                    '#(src|href)=(["\'])(?:\.\./|\./)?img/([^"\']+)\2#i',
+                    function ($m) {
+                        return $m[1] . '=' . $m[2] . $this->escapeHtmlAttr($this->assetUrl('img/' . $m[3])) . $m[2];
+                    },
+                    $html
+                );
+            };
+            $footerColumns = array_map($themeImagePaths, $footerColumns);
+            $footerBottomContent = $themeImagePaths($this->themeSetting('footer_bottom'));
+            $hasFooterContent = (bool) array_filter($footerColumns);
+            ?>
+            <div class="footer-inner footer-columns">
+                <?php if ($hasFooterContent): ?>
+                    <?php foreach ($footerColumns as $position => $columnContent): ?>
+                    <div class="footer-column footer-<?php echo $position; ?>">
+                        <?php echo $columnContent; ?>
+                    </div>
+                    <?php endforeach; ?>
                 <?php else: ?>
-                    <?php echo $this->translate('Powered by Omeka S'); ?>
+                    <div class="footer-column footer-left">
+                        <?php echo $this->translate('Powered by Omeka S'); ?>
+                    </div>
                 <?php endif; ?>
             </div>
-            <?php if ($footerBottomContent = $this->themeSetting('footer_bottom')): ?>
+            <?php if ($footerBottomContent): ?>
             <div class="footer-bottom">
                 <div class="footer-inner">
                     <?php echo $footerBottomContent; ?>

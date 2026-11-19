@@ -1,1 +1,272 @@
-// Desktop styles are compiled into style.css directly.
+@use "variables" as *;
+
+/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+   DESKTOP (800px+)
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+
+@media screen and (min-width: #{$bp-desktop}) {
+    /* ── Header: logo left, nav + search right, one row ────────────────── */
+
+    header {
+        display: grid;
+        grid-template-columns: 1fr auto auto;
+        align-items: stretch;
+        background-color: var(--header-bg);
+        padding: 0 var(--container-inset);
+        margin-bottom: 0;
+    }
+    /* 80px logo in a 141px header, matching the WordPress site */
+    .site-title-bar {
+        background-color: transparent;
+        padding: 0;
+        min-height: 141px;
+    }
+    h1.site-title { font-size: 1.375rem; }
+    h1.site-title img { height: 80px; }
+
+    /* Banner spans the full row and bleeds past the header padding */
+    header .banner {
+        grid-column: 1 / -1;
+        margin: 0 calc(-1 * var(--container-inset));
+    }
+
+    /* ── Navigation: horizontal, right-aligned, vertically centered ────── */
+
+    #top-nav {
+        background-color: transparent;
+        padding: 0;
+        display: flex;
+        align-items: stretch;
+    }
+
+    /* Hide mobile toggle */
+    #mobile-nav-toggle { display: none; }
+
+    #top-nav ul.navigation {
+        max-height: none;
+        overflow: visible;
+        display: flex;
+        align-items: stretch;
+        justify-content: flex-end;
+        margin: 0;
+        transition: none;
+    }
+
+    /* Top-level items fill the header height so dropdowns open at its bottom edge */
+    #top-nav ul.navigation > li {
+        border-top: 0;
+        position: relative;
+        display: flex;
+        align-items: center;
+    }
+
+    /* Top-level links (plain items and dropdown parents) */
+    #top-nav ul.navigation > li > a,
+    #top-nav ul.navigation > li > .parent-link > a {
+        position: relative;
+        display: inline-block;
+        padding: 6px 0 5px;
+        margin: 0 15px;
+        transition: color 0.15s;
+    }
+    /* Underline: grows left to right on hover */
+    #top-nav ul.navigation > li > a::after,
+    #top-nav ul.navigation > li > .parent-link > a::after {
+        content: "";
+        position: absolute;
+        left: 0;
+        right: 0;
+        bottom: -3px;
+        height: 2px;
+        background-color: var(--nav-stroke);
+        transform: scaleX(0);
+        transform-origin: 0 0;
+        transition: transform .35s cubic-bezier(.52, .01, .16, 1);
+    }
+    #top-nav ul.navigation > li > a:hover,
+    #top-nav ul.navigation > li > .parent-link > a:hover,
+    #top-nav ul.navigation > li.active > a,
+    #top-nav ul.navigation > li.active > .parent-link > a {
+        color: var(--white);
+        text-decoration: none;
+    }
+    #top-nav ul.navigation > li > a:hover::after,
+    #top-nav ul.navigation > li > a:focus-visible::after,
+    #top-nav ul.navigation > li.active > a::after,
+    #top-nav ul.navigation > li.parent:hover > .parent-link > a::after,
+    #top-nav ul.navigation > li.parent:focus-within > .parent-link > a::after,
+    #top-nav ul.navigation > li.active > .parent-link > a::after {
+        transform: scaleX(1);
+    }
+    /* Current page: underline in the current-page color, always shown */
+    #top-nav ul.navigation > li > a[aria-current="page"],
+    #top-nav ul.navigation > li.active > a[aria-current="page"],
+    #top-nav ul.navigation > li > .parent-link > a[aria-current="page"] {
+        text-decoration: none;
+    }
+    #top-nav ul.navigation > li > a[aria-current="page"]::after,
+    #top-nav ul.navigation > li > .parent-link > a[aria-current="page"]::after {
+        background-color: var(--current-underline);
+        transform: scaleX(1);
+    }
+    @media (prefers-reduced-motion: reduce) {
+        #top-nav ul.navigation > li > a::after,
+        #top-nav ul.navigation > li > .parent-link > a::after { transition: none; }
+    }
+
+    /* Dropdown parents: link + small caret toggle side by side */
+    #top-nav ul.navigation > li > .parent-link {
+        display: flex;
+        align-items: center;
+        justify-content: flex-start;
+    }
+    #top-nav ul.navigation > li > .parent-link > a { flex: 0 0 auto; margin-right: 4px; }
+    #top-nav ul.navigation > li > .parent-link > .child-toggle {
+        width: 20px;
+        height: 20px;
+        margin-right: 11px;
+        border-left: 0;
+        font-size: 12px;
+    }
+    #top-nav ul.navigation > li > .parent-link > .child-toggle::before { content: "\f107"; }
+
+    /* Desktop dropdowns: vertical panel under the parent item */
+    #top-nav ul.navigation > li > ul { display: none; }
+    #top-nav ul.navigation > li:hover > ul,
+    #top-nav ul.navigation > li:focus-within > ul,
+    #top-nav ul.navigation > .parent > ul.open {
+        position: absolute;
+        top: 100%;
+        left: 0;
+        min-width: 240px;
+        background-color: var(--header-bg);
+        list-style: none;
+        padding: var(--sp-xs) 0;
+        display: flex;
+        flex-direction: column;
+        z-index: 100;
+        border-top: 1px solid rgba(255, 255, 255, 0.25);
+        margin: 0;
+    }
+    /* keep the last menu's dropdown inside the viewport */
+    #top-nav ul.navigation > li:last-child > ul { left: auto; right: 0; }
+
+    #top-nav ul.navigation > li > ul > li {
+        width: 100%;
+        font-size: 0.8125rem;
+        font-weight: 700;
+        color: var(--white);
+    }
+    #top-nav ul.navigation > li > ul > li a {
+        color: var(--white);
+        padding: var(--sp-xs) var(--sp-sm);
+        line-height: 1.4;
+        text-transform: none;
+        letter-spacing: 0;
+        border-bottom: none;
+        font-weight: 700;
+    }
+    #top-nav ul.navigation > li > ul > li a:hover { color: rgba(255, 255, 255, 0.75); }
+    #top-nav ul.navigation > li > ul > li ul {
+        font-weight: 400;
+        padding-left: var(--sp-sm);
+        list-style-type: none;
+        height: auto;
+        display: block;
+    }
+    #top-nav ul.navigation > li > ul > li ul a {
+        font-weight: 400;
+        opacity: 0.85;
+    }
+
+    /* ── Search toggle: last item in the header row ───────────────────── */
+
+    #search {
+        position: static;
+        align-self: center;
+        margin-left: var(--sp-sm);
+    }
+
+    /* ── Content ───────────────────────────────────────────────────────── */
+
+    #content {
+        max-width: var(--container-max);
+        margin: 0 auto;
+        padding: var(--sp-md) var(--container-pad);
+    }
+
+    /* ── Footer ────────────────────────────────────────────────────────── */
+
+    footer .footer-inner { padding: var(--sp-lg) var(--container-pad); }
+    footer .footer-columns {
+        grid-template-columns: repeat(3, 1fr);
+        gap: var(--sp-lg);
+    }
+    footer .footer-bottom .footer-inner { padding-top: var(--sp-sm); padding-bottom: var(--sp-sm); }
+
+    /* ── Sub-menu: horizontal ──────────────────────────────────────────── */
+
+    .sub-menu li {
+        display: inline-block;
+        border: 0;
+        padding: 0;
+        margin-right: var(--sp-sm);
+    }
+    .sub-menu li:first-of-type { border: 0; padding: 0; }
+
+    /* ── Resource list: larger thumbs ──────────────────────────────────── */
+
+    ul.resource-list .resource img {
+        width: calc(4 * var(--sp-md));
+        float: right;
+        margin-left: var(--sp-sm);
+    }
+    ul.resource-list .resource img ~ * {
+        width: calc(100% - calc(4.5 * var(--sp-md)));
+    }
+
+    /* ── Item set layout ───────────────────────────────────────────────── */
+
+    body.item-set.item #content {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: flex-start;
+        justify-content: flex-end;
+    }
+    body.item-set.item #content > h2,
+    body.item-set.item #content > h3 { width: 100%; }
+    body.item-set .metadata {
+        width: 35%;
+        border-left: 5px solid var(--accent);
+        padding: 0 var(--sp-md);
+    }
+    body.item-set .metadata h4:first-of-type { margin-top: 0; }
+    body.item-set #content .metadata ~ * {
+        width: 65%;
+        border-left: 1px solid var(--border);
+        padding-left: var(--sp-md);
+    }
+    body.item-set .item-set-items h3 { margin-top: 0; }
+    body.item-set .metadata ~ nav.pagination:first-of-type { margin-bottom: 0; }
+
+    /* ── Search results grid ───────────────────────────────────────────── */
+
+    .results > ul { display: flex; flex-wrap: wrap; }
+    .results > ul > li { width: calc(50% - var(--sp-md)); }
+    .results > ul > li:nth-child(2n) { margin-left: var(--sp-md); }
+
+    /* ── Fields ────────────────────────────────────────────────────────── */
+
+    .field .field-meta { width: 30%; align-self: flex-start; }
+    .field .inputs { width: 70%; padding-left: var(--sp-md); }
+    .field .value select { width: initial; margin-bottom: 0; }
+
+    /* ── Preview blocks ────────────────────────────────────────────────── */
+
+    .preview-block { clear: both; }
+    ul.preview.resource-list li:first-of-type {
+        border-top: 1px solid var(--border);
+        padding-top: calc(var(--sp-md) - 1px);
+    }
+
+}

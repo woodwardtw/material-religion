@@ -1,9 +1,16 @@
 @charset "UTF-8";
+/*
+ * Material Religion — Omeka S Theme
+ *
+ * Follows the Material Religions Website Brand Guidelines (v11.12.26).
+ * Colors: Atlantic Blue #2d668c · Caribbean Blue #289dcc · Dusk #434a54 · Mist #c5ceda · Night #2d343d
+ * Fonts:  Playfair Display 400 (h1–h3, h5) · Libre Franklin 300–700 (h4, h6, body, UI)
+ *
+ * Built from asset/sass — edit the partials, then run:
+ *   npx sass --no-source-map asset/sass/style.scss asset/css/style.css
+ */
 
-@import "normalize";
-@import "base";
-@import "screen";
-
-@media screen and (min-width: 800px) {
-    @import "desktop";
-}
+@use "base";      // custom properties, element defaults, buttons, forms
+@use "screen";    // mobile-first components: header, nav, search, footer, content blocks
+@use "desktop";   // 800px+ layout
+@use "overrides"; // one-off page styles
