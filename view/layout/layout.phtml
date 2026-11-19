@@ -40,7 +40,8 @@ $userBar = $this->userBar();
                     <h1 class="site-title">
                         <a href="<?php echo $site->url(); ?>">
                         <?php // Admin "Logo" theme setting overrides the bundled knock-out logo (393x160, 2x for an 80px header logo). ?>
-                        <img src="<?php echo $escape($this->themeSetting('logo') ? $this->themeSettingAssetUrl('logo') : $this->assetUrl('img/materialrel-logo.png')); ?>" alt="<?php echo $escape($siteTitle); ?>" width="197" height="80" />
+                        <img src="<?php echo $escape($this->themeSetting('logo') ? $this->themeSettingAssetUrl('logo') : $this->assetUrl('img/materialrel-logo.png')); ?>" alt="<?php echo $escape($translate('Material Religions, Princeton University')); ?>" width="197" height="80" />
+                        <span class="site-name"><?php echo $escape($siteTitle); ?></span>
                         </a>
                     </h1>
                 </div>

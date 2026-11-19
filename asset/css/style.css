@@ -192,11 +192,12 @@ input[type=submit] {
   border: 0;
   border-radius: 4px;
   padding: 15px 44px 15px 46px;
-  font-family: var(--font-button);
+  font-family: var(--font-button); /* Libre Franklin */
   font-size: 14px;
   font-weight: 500;
   line-height: 20px;
-  letter-spacing: normal;
+  letter-spacing: 2px;
+  text-transform: uppercase !important;
   cursor: pointer;
   text-decoration: none;
   transition: filter 0.15s, box-shadow 0.15s;
@@ -350,21 +351,26 @@ header {
 .site-title-bar {
   background-color: var(--header-bg);
   /* full-bleed: no max-width. Use padding to inset contents. */
-  padding: var(--sp-sm) var(--sp-md);
+  /* right padding keeps a long site name clear of the absolutely positioned search toggle */
+  padding: var(--sp-sm) calc(var(--sp-md) + 40px + var(--sp-sm)) var(--sp-sm) var(--sp-md);
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  justify-content: flex-start;
 }
 
 h1.site-title {
-  font-family: var(--font-sans);
-  font-size: 1.1rem;
-  font-weight: 700;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  line-height: var(--base-line);
+  font-size: inherit;
+  line-height: inherit;
   margin: 0;
   padding: 0;
+}
+
+/* Logo + divider + site name read as one left-aligned lockup */
+h1.site-title a {
+  display: flex;
+  align-items: stretch;
+  gap: var(--sp-sm);
+  transition: opacity 0.15s;
 }
 
 h1.site-title a:link,
@@ -374,8 +380,9 @@ h1.site-title a:visited {
 }
 
 h1.site-title a:hover {
-  color: rgba(255, 255, 255, 0.75);
+  color: var(--white);
   text-decoration: none;
+  opacity: 0.85;
 }
 
 /* Knock-out logo. Mobile: 56px tall; desktop: 80px (matches the WordPress site). */
@@ -384,10 +391,20 @@ h1.site-title img {
   width: auto;
   max-width: none;
   display: block;
+  flex-shrink: 0;
 }
 
-h1.site-title a:hover img {
-  opacity: 0.85;
+/* Site name: Playfair Display 400 (brand header face), divider at full logo height */
+h1.site-title .site-name {
+  display: flex;
+  align-items: center;
+  padding-left: var(--sp-sm);
+  border-left: 1px solid rgba(255, 255, 255, 0.5);
+  font-family: var(--font-serif);
+  font-size: 1.125rem;
+  font-weight: 400;
+  line-height: 1.2;
+  letter-spacing: 1px;
 }
 
 /* ── Navigation bar ──────────────────────────────────────────────────────── */
@@ -430,6 +447,15 @@ h1.site-title a:hover img {
 .child-toggle:hover {
   filter: none;
   box-shadow: none;
+}
+
+/* Icon-only buttons: drop the button letter-spacing so glyphs stay centered */
+#mobile-nav-toggle,
+.child-toggle,
+#search-toggle,
+#search-close,
+.pagination .button {
+  letter-spacing: 0;
 }
 
 /* Nav list — collapsed by default (mobile) */
@@ -970,10 +996,12 @@ ul.resource-list .resource h4 a:hover {
   border: 0;
   border-radius: 4px;
   padding: 15px 44px 15px 46px;
-  font-family: var(--font-button);
+  font-family: var(--font-button); /* Libre Franklin */
   font-size: 14px;
   font-weight: 500;
   line-height: 20px;
+  letter-spacing: 2px;
+  text-transform: uppercase !important;
   text-decoration: none;
   transition: filter 0.15s, box-shadow 0.15s;
 }
@@ -1538,25 +1566,81 @@ a.metadata-browse-link {
     padding: 0;
     min-height: 141px;
   }
-  h1.site-title {
-    font-size: 1.375rem;
-  }
   h1.site-title img {
     height: 80px;
   }
+  h1.site-title a {
+    gap: var(--sp-md);
+  }
+  h1.site-title .site-name {
+    padding-left: var(--sp-md);
+    font-size: 1.75rem; /* 28px */
+    line-height: 1.25;
+    max-width: 18em; /* long names wrap rather than crowd the nav */
+  }
+  /* Narrow desktops (800–1199px): tighten the header so logo, site name,
+     nav and search fit on one row. Full 80px / 141px spec applies from 1200px. */
   /* Banner spans the full row and bleeds past the header padding */
+  /* ── Navigation: horizontal, right-aligned, vertically centered ────── */
+  /* Hide mobile toggle */
+  /* Top-level items fill the header height so dropdowns open at its bottom edge */
+  /* Top-level links (plain items and dropdown parents) */
+  /* Underline: grows left to right on hover */
+  /* Current page: underline in the current-page color, always shown */
+  /* Dropdown parents: no caret on desktop. The menu opens on hover, and on
+     keyboard focus of the parent link (:focus-within), so the toggle isn't needed. */
+  /* Desktop dropdowns: translucent Caribbean Blue panel hanging from the
+     header's bottom edge, left-aligned with its parent item */
+  /* Third level: indented inside the same panel */
+  /* ── Search toggle: last item in the header row ───────────────────── */
+  /* ── Content ───────────────────────────────────────────────────────── */
+  /* ── Footer ────────────────────────────────────────────────────────── */
+  /* ── Sub-menu: horizontal ──────────────────────────────────────────── */
+  /* ── Resource list: larger thumbs ──────────────────────────────────── */
+  /* ── Item set layout ───────────────────────────────────────────────── */
+  /* ── Search results grid ───────────────────────────────────────────── */
+  /* ── Fields ────────────────────────────────────────────────────────── */
+  /* ── Preview blocks ────────────────────────────────────────────────── */
+}
+@media screen and (min-width: 800px) and (max-width: 1199px) {
+  header {
+    padding-left: var(--sp-md);
+    padding-right: var(--sp-md);
+  }
+  header .banner {
+    margin: 0 calc(-1 * var(--sp-md));
+  }
+  h1.site-title img {
+    height: 64px;
+  }
+  h1.site-title a {
+    gap: var(--sp-sm);
+  }
+  h1.site-title .site-name {
+    padding-left: var(--sp-sm);
+    font-size: 1.25rem;
+  }
+  #top-nav ul.navigation > li > a,
+  #top-nav ul.navigation > li > .parent-link > a {
+    margin: 0 10px;
+  }
+  /* little room right of the last item here, so its dropdown opens leftward */
+  #top-nav ul.navigation > li.parent:last-child > ul {
+    left: auto;
+    right: 0;
+  }
+}
+@media screen and (min-width: 800px) {
   header .banner {
     grid-column: 1/-1;
     margin: 0 calc(-1 * var(--container-inset));
   }
-  /* ── Navigation: horizontal, right-aligned, vertically centered ────── */
   #top-nav {
     background-color: transparent;
     padding: 0;
     display: flex;
     align-items: stretch;
   }
-  /* Hide mobile toggle */
   #mobile-nav-toggle {
     display: none;
   }
@@ -1569,14 +1653,12 @@ a.metadata-browse-link {
     margin: 0;
     transition: none;
   }
-  /* Top-level items fill the header height so dropdowns open at its bottom edge */
   #top-nav ul.navigation > li {
     border-top: 0;
     position: relative;
     display: flex;
     align-items: center;
   }
-  /* Top-level links (plain items and dropdown parents) */
   #top-nav ul.navigation > li > a,
   #top-nav ul.navigation > li > .parent-link > a {
     position: relative;
@@ -1585,7 +1667,6 @@ a.metadata-browse-link {
     margin: 0 15px;
     transition: color 0.15s;
   }
-  /* Underline: grows left to right on hover */
   #top-nav ul.navigation > li > a::after,
   #top-nav ul.navigation > li > .parent-link > a::after {
     content: "";
@@ -1614,7 +1695,6 @@ a.metadata-browse-link {
   #top-nav ul.navigation > li.active > .parent-link > a::after {
     transform: scaleX(1);
   }
-  /* Current page: underline in the current-page color, always shown */
   #top-nav ul.navigation > li > a[aria-current=page],
   #top-nav ul.navigation > li.active > a[aria-current=page],
   #top-nav ul.navigation > li > .parent-link > a[aria-current=page] {
@@ -1625,18 +1705,6 @@ a.metadata-browse-link {
     background-color: var(--current-underline);
     transform: scaleX(1);
   }
-  /* Dropdown parents: link + small caret toggle side by side */
-  /* Desktop dropdowns: vertical panel under the parent item */
-  /* keep the last menu's dropdown inside the viewport */
-  /* ── Search toggle: last item in the header row ───────────────────── */
-  /* ── Content ───────────────────────────────────────────────────────── */
-  /* ── Footer ────────────────────────────────────────────────────────── */
-  /* ── Sub-menu: horizontal ──────────────────────────────────────────── */
-  /* ── Resource list: larger thumbs ──────────────────────────────────── */
-  /* ── Item set layout ───────────────────────────────────────────────── */
-  /* ── Search results grid ───────────────────────────────────────────── */
-  /* ── Fields ────────────────────────────────────────────────────────── */
-  /* ── Preview blocks ────────────────────────────────────────────────── */
 }
 @media screen and (min-width: 800px) and (prefers-reduced-motion: reduce) {
   #top-nav ul.navigation > li > a::after,
@@ -1652,17 +1720,9 @@ a.metadata-browse-link {
   }
   #top-nav ul.navigation > li > .parent-link > a {
     flex: 0 0 auto;
-    margin-right: 4px;
   }
   #top-nav ul.navigation > li > .parent-link > .child-toggle {
-    width: 20px;
-    height: 20px;
-    margin-right: 11px;
-    border-left: 0;
-    font-size: 12px;
-  }
-  #top-nav ul.navigation > li > .parent-link > .child-toggle::before {
-    content: "\f107";
+    display: none;
   }
   #top-nav ul.navigation > li > ul {
     display: none;
@@ -1674,47 +1734,48 @@ a.metadata-browse-link {
     top: 100%;
     left: 0;
     min-width: 240px;
-    background-color: var(--header-bg);
+    margin: 0;
+    padding: 20px;
     list-style: none;
-    padding: var(--sp-xs) 0;
     display: flex;
     flex-direction: column;
     z-index: 100;
-    border-top: 1px solid rgba(255, 255, 255, 0.25);
-    margin: 0;
-  }
-  #top-nav ul.navigation > li:last-child > ul {
-    left: auto;
-    right: 0;
+    background-color: rgba(40, 157, 204, 0.9);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.12);
   }
   #top-nav ul.navigation > li > ul > li {
     width: 100%;
-    font-size: 0.8125rem;
-    font-weight: 700;
     color: var(--white);
   }
   #top-nav ul.navigation > li > ul > li a {
     color: var(--white);
-    padding: var(--sp-xs) var(--sp-sm);
-    line-height: 1.4;
+    padding: 0 6px;
+    font-size: 14px;
+    font-weight: 400;
+    line-height: 26px;
     text-transform: none;
     letter-spacing: 0;
     border-bottom: none;
-    font-weight: 700;
+    opacity: 1;
+    transition: background-color 0.15s;
   }
-  #top-nav ul.navigation > li > ul > li a:hover {
-    color: rgba(255, 255, 255, 0.75);
+  #top-nav ul.navigation > li > ul > li a:hover,
+  #top-nav ul.navigation > li > ul > li a:focus-visible {
+    background-color: var(--atlantic-blue);
+    color: var(--white);
+    text-decoration: none;
+  }
+  #top-nav ul.navigation > li > ul > li a:focus-visible {
+    outline-offset: 0;
+  }
+  #top-nav ul.navigation > li > ul > li a[aria-current=page] {
+    text-decoration: none;
   }
   #top-nav ul.navigation > li > ul > li ul {
-    font-weight: 400;
     padding-left: var(--sp-sm);
     list-style-type: none;
     height: auto;
     display: block;
-  }
-  #top-nav ul.navigation > li > ul > li ul a {
-    font-weight: 400;
-    opacity: 0.85;
   }
   #search {
     position: static;

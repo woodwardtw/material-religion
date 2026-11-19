@@ -21,8 +21,28 @@
         padding: 0;
         min-height: 141px;
     }
-    h1.site-title { font-size: 1.375rem; }
     h1.site-title img { height: 80px; }
+    h1.site-title a { gap: var(--sp-md); }
+    h1.site-title .site-name {
+        padding-left: var(--sp-md);
+        font-size: 1.75rem;   /* 28px */
+        line-height: 1.25;
+        max-width: 18em;      /* long names wrap rather than crowd the nav */
+    }
+
+    /* Narrow desktops (800–1199px): tighten the header so logo, site name,
+       nav and search fit on one row. Full 80px / 141px spec applies from 1200px. */
+    @media (max-width: #{$bp-wide - 1px}) {
+        header { padding-left: var(--sp-md); padding-right: var(--sp-md); }
+        header .banner { margin: 0 calc(-1 * var(--sp-md)); }
+        h1.site-title img { height: 64px; }
+        h1.site-title a { gap: var(--sp-sm); }
+        h1.site-title .site-name { padding-left: var(--sp-sm); font-size: 1.25rem; }
+        #top-nav ul.navigation > li > a,
+        #top-nav ul.navigation > li > .parent-link > a { margin: 0 10px; }
+        /* little room right of the last item here, so its dropdown opens leftward */
+        #top-nav ul.navigation > li.parent:last-child > ul { left: auto; right: 0; }
+    }
 
     /* Banner spans the full row and bleeds past the header padding */
     header .banner {
@@ -114,23 +134,18 @@
         #top-nav ul.navigation > li > .parent-link > a::after { transition: none; }
     }
 
-    /* Dropdown parents: link + small caret toggle side by side */
+    /* Dropdown parents: no caret on desktop. The menu opens on hover, and on
+       keyboard focus of the parent link (:focus-within), so the toggle isn't needed. */
     #top-nav ul.navigation > li > .parent-link {
         display: flex;
         align-items: center;
         justify-content: flex-start;
     }
-    #top-nav ul.navigation > li > .parent-link > a { flex: 0 0 auto; margin-right: 4px; }
-    #top-nav ul.navigation > li > .parent-link > .child-toggle {
-        width: 20px;
-        height: 20px;
-        margin-right: 11px;
-        border-left: 0;
-        font-size: 12px;
-    }
-    #top-nav ul.navigation > li > .parent-link > .child-toggle::before { content: "\f107"; }
+    #top-nav ul.navigation > li > .parent-link > a { flex: 0 0 auto; }
+    #top-nav ul.navigation > li > .parent-link > .child-toggle { display: none; }
 
-    /* Desktop dropdowns: vertical panel under the parent item */
+    /* Desktop dropdowns: translucent Caribbean Blue panel hanging from the
+       header's bottom edge, left-aligned with its parent item */
     #top-nav ul.navigation > li > ul { display: none; }
     #top-nav ul.navigation > li:hover > ul,
     #top-nav ul.navigation > li:focus-within > ul,
@@ -139,44 +154,47 @@
         top: 100%;
         left: 0;
         min-width: 240px;
-        background-color: var(--header-bg);
+        margin: 0;
+        padding: 20px;
         list-style: none;
-        padding: var(--sp-xs) 0;
         display: flex;
         flex-direction: column;
         z-index: 100;
-        border-top: 1px solid rgba(255, 255, 255, 0.25);
-        margin: 0;
+        background-color: rgba($caribbean-blue, 0.9);
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.12);
     }
-    /* keep the last menu's dropdown inside the viewport */
-    #top-nav ul.navigation > li:last-child > ul { left: auto; right: 0; }
 
     #top-nav ul.navigation > li > ul > li {
         width: 100%;
-        font-size: 0.8125rem;
-        font-weight: 700;
         color: var(--white);
     }
     #top-nav ul.navigation > li > ul > li a {
         color: var(--white);
-        padding: var(--sp-xs) var(--sp-sm);
-        line-height: 1.4;
+        padding: 0 6px;
+        font-size: 14px;
+        font-weight: 400;
+        line-height: 26px;
         text-transform: none;
         letter-spacing: 0;
         border-bottom: none;
-        font-weight: 700;
+        opacity: 1;
+        transition: background-color 0.15s;
     }
-    #top-nav ul.navigation > li > ul > li a:hover { color: rgba(255, 255, 255, 0.75); }
+    #top-nav ul.navigation > li > ul > li a:hover,
+    #top-nav ul.navigation > li > ul > li a:focus-visible {
+        background-color: var(--atlantic-blue);
+        color: var(--white);
+        text-decoration: none;
+    }
+    #top-nav ul.navigation > li > ul > li a:focus-visible { outline-offset: 0; }
+    #top-nav ul.navigation > li > ul > li a[aria-current="page"] { text-decoration: none; }
+
+    /* Third level: indented inside the same panel */
     #top-nav ul.navigation > li > ul > li ul {
-        font-weight: 400;
         padding-left: var(--sp-sm);
         list-style-type: none;
         height: auto;
         display: block;
-    }
-    #top-nav ul.navigation > li > ul > li ul a {
-        font-weight: 400;
-        opacity: 0.85;
     }
 
     /* ── Search toggle: last item in the header row ───────────────────── */

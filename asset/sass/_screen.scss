@@ -16,33 +16,49 @@ header {
 .site-title-bar {
     background-color: var(--header-bg);
     /* full-bleed: no max-width. Use padding to inset contents. */
-    padding: var(--sp-sm) var(--sp-md);
+    /* right padding keeps a long site name clear of the absolutely positioned search toggle */
+    padding: var(--sp-sm) calc(var(--sp-md) + 40px + var(--sp-sm)) var(--sp-sm) var(--sp-md);
     display: flex;
     align-items: center;
-    justify-content: space-between;
+    justify-content: flex-start;
 }
 
 h1.site-title {
-    font-family: var(--font-sans);
-    font-size: 1.1rem;
-    font-weight: 700;
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
-    line-height: var(--base-line);
+    font-size: inherit;
+    line-height: inherit;
     margin: 0;
     padding: 0;
 }
 
+/* Logo + divider + site name read as one left-aligned lockup */
+h1.site-title a {
+    display: flex;
+    align-items: stretch;
+    gap: var(--sp-sm);
+    transition: opacity 0.15s;
+}
 h1.site-title a:link,
 h1.site-title a:visited {
     color: var(--white);
     text-decoration: none;
 }
-h1.site-title a:hover { color: rgba(255, 255, 255, 0.75); text-decoration: none; }
+h1.site-title a:hover { color: var(--white); text-decoration: none; opacity: 0.85; }
 
 /* Knock-out logo. Mobile: 56px tall; desktop: 80px (matches the WordPress site). */
-h1.site-title img { height: 56px; width: auto; max-width: none; display: block; }
-h1.site-title a:hover img { opacity: 0.85; }
+h1.site-title img { height: 56px; width: auto; max-width: none; display: block; flex-shrink: 0; }
+
+/* Site name: Playfair Display 400 (brand header face), divider at full logo height */
+h1.site-title .site-name {
+    display: flex;
+    align-items: center;
+    padding-left: var(--sp-sm);
+    border-left: 1px solid rgba(255, 255, 255, 0.5);
+    font-family: var(--font-serif);
+    font-size: 1.125rem;
+    font-weight: 400;
+    line-height: 1.2;
+    letter-spacing: 1px;
+}
 
 /* ── Navigation bar ──────────────────────────────────────────────────────── */
 
@@ -78,6 +94,13 @@ h1.site-title a:hover img { opacity: 0.85; }
 #top-nav.open #mobile-nav-toggle::before { content: "\f00d"; }
 #mobile-nav-toggle:hover,
 .child-toggle:hover { filter: none; box-shadow: none; }
+
+/* Icon-only buttons: drop the button letter-spacing so glyphs stay centered */
+#mobile-nav-toggle,
+.child-toggle,
+#search-toggle,
+#search-close,
+.pagination .button { letter-spacing: 0; }
 
 /* Nav list — collapsed by default (mobile) */
 #top-nav ul.navigation {
@@ -479,10 +502,12 @@ ul.resource-list .resource h4 a:hover { color: var(--accent); }
     border: 0;
     border-radius: 4px;
     padding: 15px 44px 15px 46px;
-    font-family: var(--font-button);
+    font-family: var(--font-button);   /* Libre Franklin */
     font-size: 14px;
     font-weight: 500;
     line-height: 20px;
+    letter-spacing: 2px;
+    text-transform: uppercase !important;
     text-decoration: none;
     transition: filter 0.15s, box-shadow 0.15s;
 }
